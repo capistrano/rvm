@@ -47,7 +47,8 @@ namespace :rvm do
         exit 1
       end
 
-      execute :rvm, "wrapper #{rvm_ruby} #{fetch(:application)}"
+      # rvm wrapper 1.9.3-p448 dump ruby gem rake irb rdoc ri bundle
+      execute :rvm, "wrapper #{rvm_ruby} #{fetch(:application)} #{map_bins}"
     end
   end
 end
