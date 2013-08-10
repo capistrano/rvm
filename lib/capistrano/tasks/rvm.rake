@@ -1,25 +1,16 @@
-def rvm_path
-  path = fetch(:rvm_custom_path)
-  path ||= if fetch(:rvm_type) == "system"
-    "/usr/local/rvm"
-  else
-    "~/.rvm"
-  end
-
-  path
+def bundler_loaded?
+  Gem::Specification::find_all_by_name('capistrano-bundler').any?
 end
 
-map_bins = fetch(:rvm_bins) || %w{rake gem bundle ruby}
-
 SSHKit.config.command_map = Hash.new do |hash, key|
-  if map_bins.include?(key.to_s)
-    hash[key] = "#{rvm_path}/bin/dump_#{key}"
+  if fetch(:rvm_map_bins).include?(key.to_s)
+    hash[key] = "#{fetch(:rvm_path)}/bin/#{fetch(:application)}_#{key}"
+  elsif key.to_s == "rvm"
+    hash[key] = "#{fetch(:rvm_path)}/bin/rvm"
   else
     hash[key] = key
   end
 end
-
-SSHKit.config.command_map[:rvm] = "#{rvm_path}/bin/rvm"
 
 namespace :deploy do
   before :starting, :hook_rvm do
@@ -47,8 +38,23 @@ namespace :rvm do
         exit 1
       end
 
-      # rvm wrapper 1.9.3-p448 dump ruby gem rake irb rdoc ri bundle
-      execute :rvm, "wrapper #{rvm_ruby} #{fetch(:application)} #{map_bins}"
+      execute :rvm, "wrapper #{rvm_ruby} #{fetch(:application)} #{fetch(:rvm_map_bins).join(" ")}"
     end
+  end
+end
+
+namespace :load do
+  task :defaults do
+    set :rvm_map_bins, bundler_loaded? ? %w{rake gem bundle ruby} : %w{rake gem ruby}
+    set :rvm_type, :user
+
+    rvm_path = fetch(:rvm_custom_path)
+    rvm_path ||= if fetch(:rvm_type) == :system
+      "/usr/local/rvm"
+    else
+      "~/.rvm"
+    end
+
+    set :rvm_path, rvm_path
   end
 end
