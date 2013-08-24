@@ -14,19 +14,25 @@ And then execute:
 
 ## Usage
 
+Include the rvm plugin in your Capfile:
+
     # Capfile
 
     require 'capistrano/rvm'
 
+Set these in every stage file dependant on your server configuration:
+
+    # stage file (production.rb or else)
+
     set :rvm_type, :user # or :system, depends on your rvm setup
     set :rvm_ruby_version, '2.0.0-p247'
 
-Use `:rvm_type` to indicate whether to use a single user installation or rvm
-or a multi-user (or system) installation of rvm. If you specify `:user`,
-capistrano expects to find your rvm installation in `~/.rvm`. If you specify
-`:system`, capistrano expects to find your rvm installation in
-`/usr/local/rvm`. If you have rvm installed elsewhere, use `rvm_custom_path`
-to tell capistrano where it is:
+Use `:rvm_type` to indicate whether to use a single user installation a multi-
+user (or system) installation of rvm. If you specify `:user`, capistrano
+expects to find your rvm installation in `~/.rvm`. If you specify `:system`,
+capistrano expects to find your rvm installation in `/usr/local/rvm`. If you
+have rvm installed elsewhere, use `rvm_custom_path` to tell capistrano where
+it is:
 
     set :rvm_type, :user
     set :rvm_custom_path, '~/.myveryownrvm'
