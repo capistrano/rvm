@@ -1,3 +1,6 @@
+RVM_SYSTEM_PATH = "/usr/local/rvm"
+RVM_USER_PATH = "~/.rvm"
+
 def bundler_loaded?
   Gem::Specification::find_all_by_name('capistrano-bundler').any?
 end
@@ -13,36 +16,49 @@ SSHKit.config.command_map = Hash.new do |hash, key|
 end
 
 namespace :deploy do
-  before :starting, :hook_rvm do
-    invoke :'rvm:check_config'
-    invoke :'rvm:create_wrappers'
-    invoke :'rvm:check'
-  end
+  after :starting, 'rvm:hook'
 end
 
 namespace :rvm do
-  task :check_config do
+  desc "Runs the RVM hook - use it before any custom tasks if necessary"
+  task :hook do
+    unless fetch(:rvm_hooked)
+      invoke :'rvm:init'
+      invoke :'rvm:create_wrappers'
+      set :rvm_hooked, true
+    end
+  end
+
+  desc "Prints the RVM and Ruby version on the target host"
+  task :check do
+    on roles(:all) do
+      puts capture(:rvm, "version")
+      puts capture(:rvm, "current")
+      puts capture(:ruby, "--version")
+    end
+  end
+  before :check, 'rvm:hook'
+
+  task :init do
     on roles(:all) do
       rvm_path = fetch(:rvm_custom_path)
-      rvm_path ||= if fetch(:rvm_type) == :system
-        "/usr/local/rvm"
-      else
-        "~/.rvm"
+      rvm_path ||= case fetch(:rvm_type)
+      when :auto
+        if test("[ -d #{RVM_SYSTEM_PATH} ]")
+          RVM_SYSTEM_PATH
+        else
+          RVM_USER_PATH
+        end
+      when :system
+        RVM_SYSTEM_PATH
+      else # :user
+        RVM_USER_PATH
       end
       set :rvm_path, rvm_path
 
       rvm_ruby_version = fetch(:rvm_ruby_version)
-      if rvm_ruby_version.nil?
-        error "rvm: :rvm_ruby_version is not set"
-        exit 1
-      end
-    end
-  end
-
-  task :check do
-    on roles(:all) do
-      execute :rvm, "version"
-      execute :ruby, "--version"
+      rvm_ruby_version ||= capture(:rvm, "current")
+      set :rvm_ruby_version, rvm_ruby_version
     end
   end
 
@@ -55,7 +71,7 @@ end
 
 namespace :load do
   task :defaults do
-    set :rvm_map_bins, bundler_loaded? ? %w{rake gem bundle ruby} : %w{rake gem ruby}
-    set :rvm_type, :user
+    set :rvm_map_bins, bundler_loaded? ? %w{bundle gem rake ruby} : %w{gem rake ruby}
+    set :rvm_type, :auto
   end
 end

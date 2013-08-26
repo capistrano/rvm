@@ -1,9 +1,12 @@
 # Capistrano::RVM
 
+RVM support for Capistrano 3.x
+
 ## Installation
 
 Add this line to your application's Gemfile:
 
+    # Gemfile
     gem 'capistrano', version: '~> 3.0.0'
     gem 'capistrano-rvm', github: "capistrano/rvm"
 
@@ -14,28 +17,34 @@ And then execute:
 
 ## Usage
 
-Include the rvm plugin in your Capfile:
+Require in Capfile to use the default task:
 
     # Capfile
-
     require 'capistrano/rvm'
 
-Set these in every stage file dependant on your server configuration:
+And you should be good to go!
 
-    # stage file (production.rb or else)
+## Configuration
 
-    set :rvm_type, :user # or :system, depends on your rvm setup
-    set :rvm_ruby_version, '2.0.0-p247'
+Set those in the stage file dependant on your server configuration:
 
-Use `:rvm_type` to indicate whether to use a single user installation a multi-
-user (or system) installation of rvm. If you specify `:user`, capistrano
-expects to find your rvm installation in `~/.rvm`. If you specify `:system`,
-capistrano expects to find your rvm installation in `/usr/local/rvm`. If you
-have rvm installed elsewhere, use `rvm_custom_path` to tell capistrano where
-it is:
-
+    # stage file (staging.rb, production.rb or else)
     set :rvm_type, :user
+    set :rvm_ruby_version, '2.0.0-p247'
     set :rvm_custom_path, '~/.myveryownrvm'
+
+### RVM path selection: `:rvm_type`
+
+Valid options are:
+  * `:auto` (default): just tries to find the correct path.
+                       `/usr/local/rvm` wins over `~/.rvm`
+  * `:system`: defines the RVM path to `/usr/local/rvm`
+  * `:user`: defines the RVM path to `~/.rvm`
+
+### Ruby and gemset selection: `:rvm_ruby_version`
+
+By default the Ruby and gemset is used which is returned by `rvm current` on
+the target host.
 
 You can omit the ruby patch level from `:rvm_ruby_version` if you want, and
 capistrano will choose the most recent patch level for that version of ruby:
@@ -50,18 +59,48 @@ or
 
     set :rvm_ruby_version, '2.0.0@mygemset'
 
+
+### Custom RVM path: `:rvm_custom_path`
+
+If you have a custom RVM setup with a different path then expected, you have
+to define a custom RVM path to tell capistrano where it is.
+
+
+## Restrictions
+
 Capistrano can't (yet) use rvm to install rubies or create gemsets, so on the
-servers you are deploying to, you will have to manually use rvm to install
-the proper ruby and create the gemset.
+servers you are deploying to, you will have to manually use rvm to install the
+proper ruby and create the gemset.
 
 
 ## How it works
 
-This gem adds a new task `rvm:create_wrappers` before `deploy:starting`. This
-task uses the `rvm wrapper` command to create a wrapper scripts for this
-application that use the desired ruby and gemset. These wrapper scripts are
-then used by capistrano when it wants to run `rake`, `gem`, `bundle`, or
-`ruby`.
+This gem adds a new task `rvm:hook` before `deploy:starting`. It uses the `rvm
+wrapper` command to create wrapper scripts for this application that use the
+desired ruby and gemset. These wrapper scripts are then used by capistrano
+when it wants to run `rake`, `gem`, `bundle`, or `ruby`.
+
+
+## Check your configuration
+
+If you want to check your configuration you can use the `rvm:check` task to
+get information about the RVM version and ruby which would be used for
+deployment.
+
+    $ cap production rvm:check
+
+
+## Custom tasks which rely on RVM/Ruby
+
+When building custom tasks which need a the corrent ruby and gemset, all you
+have to do is run the `rvm:hook` task before your own task. This will create
+the necessary wrappers and handles the execution of the ruby-related commands.
+This is only necessary if your task is *not* *after* the `deploy:starting` task.
+
+    before :my_custom_task, 'rvm:hook'
+
+The hook can be called multiple times per `cap` run - it only creates the
+wrappers once.
 
 ## Contributing
 
