@@ -7,7 +7,7 @@ RVM support for Capistrano 3.x
 Add this line to your application's Gemfile:
 
     # Gemfile
-    gem 'capistrano', version: '~> 3.0.0'
+    gem 'capistrano', github: 'capistrano/capistrano', branch: 'v3'
     gem 'capistrano-rvm', github: "capistrano/rvm"
 
 And then execute:
