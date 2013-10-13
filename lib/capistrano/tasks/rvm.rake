@@ -7,7 +7,7 @@ end
 
 SSHKit.config.command_map = Hash.new do |hash, key|
   if fetch(:rvm_map_bins).include?(key.to_s)
-    hash[key] = "#{fetch(:rvm_path)}/bin/#{fetch(:application)}_#{key}"
+    hash[key] = "#{fetch(:rvm_bins_path)}/bin/#{fetch(:application)}_#{key}"
   elsif key.to_s == "rvm"
     hash[key] = "#{fetch(:rvm_path)}/bin/rvm"
   else
@@ -49,12 +49,13 @@ namespace :rvm do
         else
           RVM_USER_PATH
         end
-      when :system
+      when :system, :mixed
         RVM_SYSTEM_PATH
       else # :user
         RVM_USER_PATH
       end
       set :rvm_path, rvm_path
+      set :rvm_bins_path, fetch(:rvm_type) == :mixed ? RVM_USER_PATH : rvm_path
 
       rvm_ruby_version = fetch(:rvm_ruby_version)
       rvm_ruby_version ||= capture(:rvm, "current")

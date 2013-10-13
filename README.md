@@ -40,6 +40,7 @@ Valid options are:
                        `/usr/local/rvm` wins over `~/.rvm`
   * `:system`: defines the RVM path to `/usr/local/rvm`
   * `:user`: defines the RVM path to `~/.rvm`
+  * `:mixed`: defines the RVM path to `/usr/local/rvm` for rvm and `~/.rvm` for wrapped commands
 
 ### Ruby and gemset selection: `:rvm_ruby_version`
 
