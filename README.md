@@ -40,7 +40,6 @@ Valid options are:
                        `/usr/local/rvm` wins over `~/.rvm`
   * `:system`: defines the RVM path to `/usr/local/rvm`
   * `:user`: defines the RVM path to `~/.rvm`
-  * `:mixed`: defines the RVM path to `/usr/local/rvm` for rvm and `~/.rvm` for wrapped commands
 
 ### Ruby and gemset selection: `:rvm_ruby_version`
 
@@ -76,10 +75,9 @@ proper ruby and create the gemset.
 
 ## How it works
 
-This gem adds a new task `rvm:hook` before `deploy:starting`. It uses the `rvm
-wrapper` command to create wrapper scripts for this application that use the
-desired ruby and gemset. These wrapper scripts are then used by capistrano
-when it wants to run `rake`, `gem`, `bundle`, or `ruby`.
+This gem adds a new task `rvm:hook` before `deploy:starting`.
+It sets the `rvm ... do ...` for capistrano when it wants to run
+`rake`, `gem`, `bundle`, or `ruby`.
 
 
 ## Check your configuration
@@ -94,14 +92,11 @@ deployment.
 ## Custom tasks which rely on RVM/Ruby
 
 When building custom tasks which need a the corrent ruby and gemset, all you
-have to do is run the `rvm:hook` task before your own task. This will create
-the necessary wrappers and handles the execution of the ruby-related commands.
+have to do is run the `rvm:hook` task before your own task. This will handle
+the execution of the ruby-related commands.
 This is only necessary if your task is *not* *after* the `deploy:starting` task.
 
     before :my_custom_task, 'rvm:hook'
-
-The hook can be called multiple times per `cap` run - it only creates the
-wrappers once.
 
 ## Contributing
 
