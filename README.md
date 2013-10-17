@@ -12,8 +12,8 @@ Add this line to your application's Gemfile:
 
 And then execute:
 
-    $ bundle --binstubs
-    $ cap install
+    $ bundle install
+    $ bundle exec cap install
 
 ## Usage
 
