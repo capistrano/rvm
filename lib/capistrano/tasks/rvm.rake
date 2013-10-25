@@ -7,7 +7,7 @@ end
 
 SSHKit.config.command_map = Hash.new do |hash, key|
   if fetch(:rvm_map_bins).include?(key.to_s)
-    hash[key] = "#{fetch(:rvm_bins_path)}/bin/#{fetch(:application)}_#{key}"
+    hash[key] = "#{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do #{key}"
   elsif key.to_s == "rvm"
     hash[key] = "#{fetch(:rvm_path)}/bin/rvm"
   else
@@ -24,7 +24,6 @@ namespace :rvm do
   task :hook do
     unless fetch(:rvm_hooked)
       invoke :'rvm:init'
-      invoke :'rvm:create_wrappers'
       set :rvm_hooked, true
     end
   end
@@ -55,7 +54,6 @@ namespace :rvm do
         RVM_USER_PATH
       end
       set :rvm_path, rvm_path
-      set :rvm_bins_path, fetch(:rvm_type) == :mixed ? RVM_USER_PATH : rvm_path
 
       rvm_ruby_version = fetch(:rvm_ruby_version)
       rvm_ruby_version ||= capture(:rvm, "current")
@@ -63,11 +61,6 @@ namespace :rvm do
     end
   end
 
-  task :create_wrappers do
-    on roles(:all) do
-      execute :rvm, "wrapper #{fetch(:rvm_ruby_version)} #{fetch(:application)} #{fetch(:rvm_map_bins).join(" ")}"
-    end
-  end
 end
 
 namespace :load do
