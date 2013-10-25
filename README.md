@@ -8,7 +8,7 @@ Add this line to your application's Gemfile:
 
     # Gemfile
     gem 'capistrano', '~> 3.0'
-    gem 'capistrano-rvm', '~> 0.0.2'
+    gem 'capistrano-rvm', '~> 0.0.3'
 
 And then execute:
 
