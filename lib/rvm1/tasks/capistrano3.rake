@@ -43,7 +43,7 @@ end
 
 namespace :load do
   task :defaults do
-    set :rvm1_ruby_string, "."
+    set :rvm1_ruby_version, "."
     set :rvm1_map_bins, %w{rake gem bundle ruby}
   end
 end
