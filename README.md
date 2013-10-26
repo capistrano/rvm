@@ -37,7 +37,7 @@ Set those in the stage file dependant on your server configuration:
 
 Valid options are:
   * `:auto` (default): just tries to find the correct path.
-                       `/usr/local/rvm` wins over `~/.rvm`
+                       `~/.rvm` wins over `/usr/local/rvm`
   * `:system`: defines the RVM path to `/usr/local/rvm`
   * `:user`: defines the RVM path to `~/.rvm`
 

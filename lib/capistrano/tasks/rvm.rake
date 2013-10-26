@@ -43,7 +43,9 @@ namespace :rvm do
       rvm_path = fetch(:rvm_custom_path)
       rvm_path ||= case fetch(:rvm_type)
       when :auto
-        if test("[ -d #{RVM_SYSTEM_PATH} ]")
+        if test("[ -d #{RVM_USER_PATH} ]")
+          RVM_USER_PATH
+        elsif test("[ -d #{RVM_SYSTEM_PATH} ]")
           RVM_SYSTEM_PATH
         else
           RVM_USER_PATH
