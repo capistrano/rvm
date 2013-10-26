@@ -36,7 +36,7 @@ fi
 
 if
   # just rvm
-  test "$ruby_string" == "rvm"
+  test "$ruby_string" = "rvm"
 then
   exec "${rvm_path}/bin/$ruby_string" "$@"
 
