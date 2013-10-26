@@ -31,7 +31,7 @@ fi
 # make sure rvm is installed
 if test -x "${rvm_path:-}/bin/rvm"
 then true
-else rvm_fail "Can not find RVM in '${rvm_path:-}'." 102
+else rvm_fail "Can not find rvm in '${rvm_path:-}'." 102
 fi
 
 if
