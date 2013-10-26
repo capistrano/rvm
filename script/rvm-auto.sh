@@ -7,12 +7,15 @@ rvm_fail()
 }
 
 if test -z "${1:-}"
-then rvm_fail "No ruby specification given." 101
+then rvm_fail "No ruby versions given." 101
 fi
 
+# the first parameter is usually ruby version to use,
+# can be "." for reading current directory ruby
 ruby_string="$1"
 shift
 
+# if rvm_path not set autodetect it
 if test -n "${rvm_path:-}"
 then true
 else
@@ -25,21 +28,36 @@ else
   fi
 fi
 
+# make sure rvm is installed
 if test -x "${rvm_path:-}/bin/rvm"
 then true
 else rvm_fail "Can not find RVM in '${rvm_path:-}'." 102
 fi
 
 if
-  source_file="`"${rvm_path}/bin/rvm" --create "$ruby_string" do rvm env --path`" &&
-  test -n "${source_file:-}" &&
-  test -r "${source_file:-}"
+  # just rvm
+  test "$ruby_string" == "rvm"
 then
-  \. "${source_file:-}"
-  if test -f "${BUNDLE_GEMFILE:-Gemfile}"
-  then exec bundle exec "$@"
-  else exec "$@"
-  fi
+  exec "${rvm_path}/bin/$ruby_string" "$@"
+
+elif
+  # Gemfile and not bundle and not in bundle exec
+  test -f "${BUNDLE_GEMFILE:-Gemfile}" -a \
+    "$1" != "bundle" -a \
+    -z "${BUNDLE_BIN_PATH:-}" -a -z "${RUBYOPT:-}"
+then
+  "$0" "$ruby_string" bundle exec "$@"
+
 else
-  rvm_fail "Can not find ruby for '$ruby_string'." 103
+  # find and load ruby, execute the command
+  if
+    source_file="`"${rvm_path}/bin/rvm" --create "$ruby_string" do rvm env --path`" &&
+    test -n "${source_file:-}" &&
+    test -r "${source_file:-}"
+  then
+    \. "${source_file:-}" &&
+    exec "$@"
+  else
+    rvm_fail "Can not find ruby for '$ruby_string'." 103
+  fi
 fi
