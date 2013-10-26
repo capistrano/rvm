@@ -31,7 +31,7 @@ Weel if you really need to this are available ways:
 ## How it works
 
 This gem adds a new task `rvm1:hook` before `deploy:starting`.
-It uses the [script/rvm-auto.sh](blob/master/script/rvm-auto.sh) for capistrano when it wants to run
+It uses the [script/rvm-auto.sh](script/rvm-auto.sh) for capistrano when it wants to run
 `rake`, `gem`, `bundle`, or `ruby`.
 
 ## Check your configuration
