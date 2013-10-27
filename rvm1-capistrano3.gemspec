@@ -17,6 +17,6 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'capistrano', '~>3.0'
   spec.add_development_dependency 'tf', '~>0.4.3'
 
-  spec.files        = Dir.glob('lib/**/*.rb')
-  # spec.test_files   = Dir.glob('spec/**/*.rb')
+  spec.files        = Dir.glob('{lib,script}/**/*.{rb,rake,sh}')
+  spec.test_files   = Dir.glob('test/**/*.{rb,sh}')
 end

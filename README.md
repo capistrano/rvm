@@ -26,7 +26,7 @@ It will automatically:
 Weel if you really need to this are available ways:
 
 - `set :rvm1_ruby_version, "2.0.0"` - to avoid autodetection and use specific version
-- `set :default_env, { rvm_path: "/opt/rvm" }` - to force specific path to rvm installation
+- `fetch(:default_env).merge!( rvm_path: "/opt/rvm" )` - to force specific path to rvm installation
 
 ## How it works
 

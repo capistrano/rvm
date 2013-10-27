@@ -1,8 +1,8 @@
 SSHKit.config.command_map = Hash.new do |hash, key|
-  if fetch(:rvm_map_bins).include?(key.to_s)
-    hash[key] = "#{fetch(:tmp_dir)}/rvm-auto.sh #{fetch(:rvm_ruby_version)} #{key}"
+  if fetch(:rvm1_map_bins).include?(key.to_s)
+    hash[key] = "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh #{fetch(:rvm1_ruby_version)} #{key}"
   elsif key.to_s == "rvm"
-    hash[key] = "#{fetch(:tmp_dir)}/rvm-auto.sh #{key}"
+    hash[key] = "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh #{key}"
   else
     hash[key] = key
   end
@@ -27,15 +27,18 @@ namespace :rvm1 do
       puts capture(:rvm, "version")
       puts capture(:rvm, "list")
       puts capture(:rvm, "current")
-      puts capture(:ruby, "--version")
+      within fetch(:latest_release_directory) do
+        puts capture(:ruby, "--version || true")
+      end
     end
   end
-  before :check, 'rvm:hook'
+  before :check, 'rvm1:hook'
 
   task :init do
     on roles(:all) do
-      upload! File.expand_path("../../../../script/rvm-auto.sh", __FILE__), "#{fetch(:tmp_dir)}/rvm-auto.sh"
-      execute :chmod, "+x", "#{fetch(:tmp_dir)}/rvm-auto.sh"
+      execute :mkdir, "-p", "#{fetch(:tmp_dir)}/#{fetch(:application)}/"
+      upload! File.expand_path("../../../../script/rvm-auto.sh", __FILE__), "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh"
+      execute :chmod, "+x", "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh"
     end
   end
 

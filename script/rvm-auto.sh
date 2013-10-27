@@ -51,7 +51,7 @@ then
 else
   # find and load ruby, execute the command
   if
-    source_file="`"${rvm_path}/bin/rvm" --create "$ruby_string" do rvm env --path`" &&
+    source_file="`"${rvm_path}/bin/rvm" "$ruby_string" --create do rvm env --path`" &&
     test -n "${source_file:-}" &&
     test -r "${source_file:-}"
   then
