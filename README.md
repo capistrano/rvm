@@ -21,6 +21,18 @@ It will automatically:
 - detect Gemfile and use `bundle exec`
 - create the gemset if not existing already
 
+## Install RVM 1.x
+
+This task will install stable version of rvm in `$HOME/.rvm`:
+```bash
+cap rvm1:install:rvm
+```
+
+Or add an before hook:
+```ruby
+before 'deploy', 'rvm1:install:rvm'  # install/update RVM
+```
+
 ## Configuration
 
 Weel if you really need to this are available ways:
