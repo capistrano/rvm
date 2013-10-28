@@ -33,6 +33,21 @@ Or add an before hook:
 before 'deploy', 'rvm1:install:rvm'  # install/update RVM
 ```
 
+## Install Ruby
+
+This task will install ruby from the project (other the specified one):
+```bash
+cap rvm1:install:ruby
+```
+
+Or add an before hook:
+```ruby
+before 'deploy', 'rvm1:install:ruby'  # install/update Ruby
+```
+
+This task requires [`NOPASSWD` for the user in `/etc/sudoers`](http://serverfault.com/a/160587),
+or at least all ruby requirements installed already.
+
 ## Configuration
 
 Weel if you really need to this are available ways:

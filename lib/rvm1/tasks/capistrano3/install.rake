@@ -9,5 +9,16 @@ namespace :rvm1 do
         execute "#{fetch(:tmp_dir)}/#{fetch(:application)}/install-rvm.sh"
       end
     end
+
+    desc "Installs Ruby for the given ruby project"
+    task :ruby do
+      on roles(:all) do
+        within fetch(:release_path) do
+          execute "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh", "rvm", "use", "--install", fetch(:rvm1_ruby_version)
+        end
+      end
+    end
+    before :ruby, "deploy:updating"
+    before :ruby, 'rvm1:hook'
   end
 end

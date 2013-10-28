@@ -16,9 +16,9 @@ ruby_string="$1"
 shift
 
 # if rvm_path not set autodetect it
-if test -n "${rvm_path:-}"
-then true
-else
+if
+  test -z "${rvm_path:-}"
+then
   export rvm_path
   if   test -x  "$HOME/.rvm/bin/rvm"
   then rvm_path="$HOME/.rvm"

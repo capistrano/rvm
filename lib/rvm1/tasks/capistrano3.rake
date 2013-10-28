@@ -27,11 +27,12 @@ namespace :rvm1 do
       puts capture(:rvm, "version")
       puts capture(:rvm, "list")
       puts capture(:rvm, "current")
-      within fetch(:latest_release_directory) do
+      within fetch(:release_path) do
         puts capture(:ruby, "--version || true")
       end
     end
   end
+  before :check, "deploy:updating"
   before :check, 'rvm1:hook'
 
   task :init do
