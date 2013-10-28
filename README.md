@@ -1,6 +1,7 @@
 # RVM 1.x Capistrano 3.x integration
 
 An automated version of the integration requiring minial configuration.
+Includes task to install RVM and Ruby.
 
 ## Installation
 
