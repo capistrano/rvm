@@ -1,6 +1,6 @@
 # RVM 1.x Capistrano 3.x integration
 
-An automated version of the integration requiring minial configuration.
+An automated version of the integration requiring minimal configuration.
 Includes task to install RVM and Ruby.
 
 ## Installation
@@ -17,7 +17,7 @@ require 'rvm1/capistrano3'
 
 It will automatically:
 
-- detect rvm installation path, preffering user installation
+- detect rvm installation path, preferring user installation
 - detect ruby from project directory
 - detect Gemfile and use `bundle exec`
 - create the gemset if not existing already
@@ -51,7 +51,7 @@ or at least all ruby requirements installed already.
 
 ## Configuration
 
-Weel if you really need to this are available ways:
+Well if you really need to there are available ways:
 
 - `set :rvm1_ruby_version, "2.0.0"` - to avoid autodetection and use specific version
 - `fetch(:default_env).merge!( rvm_path: "/opt/rvm" )` - to force specific path to rvm installation
@@ -72,7 +72,7 @@ deployment.
 
 ## Custom tasks which rely on RVM/Ruby
 
-When building custom tasks which need a the corrent ruby and gemset, all you
+When building custom tasks which need the current ruby version and gemset, all you
 have to do is run the `rvm1:hook` task before your own task. This will handle
 the execution of the ruby-related commands.
 This is only necessary if your task is *not* *after* the `deploy:starting` task.
