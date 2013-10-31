@@ -4,8 +4,14 @@ An automated version of the integration requiring minimal configuration.
 Includes task to install RVM and Ruby.
 
 ## Installation
+Add this line to your application's Gemfile:
 
-Add `rvm1-capistrano3` gem to `Gemfile` or just install the gem.
+    gem 'rvm1-capistrano3', require: false
+
+
+Or install it yourself as:
+
+    $ gem install rvm1-capistrano3
 
 ## Usage
 
