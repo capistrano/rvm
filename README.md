@@ -91,7 +91,7 @@ deployment.
 
 ## Custom tasks which rely on RVM/Ruby
 
-When building custom tasks which need a the corrent ruby and gemset, all you
+When building custom tasks which rely on the current ruby and gemset, all you
 have to do is run the `rvm:hook` task before your own task. This will handle
 the execution of the ruby-related commands.
 This is only necessary if your task is *not* *after* the `deploy:starting` task.
