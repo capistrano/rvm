@@ -55,7 +55,8 @@ before 'deploy', 'rvm1:install:ruby'  # install/update Ruby
 This task requires [`NOPASSWD` for the user in `/etc/sudoers`](http://serverfault.com/a/160587),
 or at least all ruby requirements installed already.
 
-Please note that NOPASSWD brings security vulnerabilities to your system and it's not recommended to involve this option.
+Please note that `NOPASSWD` can bring security vulnerabilities to your system and
+it's not recommended to involve this option unless you really understand implications of it.
 
 ## Configuration
 
