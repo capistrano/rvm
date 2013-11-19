@@ -1,33 +1,7 @@
 RVM_SYSTEM_PATH = "/usr/local/rvm"
 RVM_USER_PATH = "~/.rvm"
 
-def bundler_loaded?
-  Gem::Specification::find_all_by_name('capistrano-bundler').any?
-end
-
-SSHKit.config.command_map = Hash.new do |hash, key|
-  if fetch(:rvm_map_bins).include?(key.to_s)
-    hash[key] = "#{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do #{key}"
-  elsif key.to_s == "rvm"
-    hash[key] = "#{fetch(:rvm_path)}/bin/rvm"
-  else
-    hash[key] = key
-  end
-end
-
-namespace :deploy do
-  after :starting, 'rvm:hook'
-end
-
 namespace :rvm do
-  desc "Runs the RVM hook - use it before any custom tasks if necessary"
-  task :hook do
-    unless fetch(:rvm_hooked)
-      invoke :'rvm:init'
-      set :rvm_hooked, true
-    end
-  end
-
   desc "Prints the RVM and Ruby version on the target host"
   task :check do
     on roles(:all) do
@@ -36,9 +10,8 @@ namespace :rvm do
       puts capture(:ruby, "--version")
     end
   end
-  before :check, 'rvm:hook'
 
-  task :init do
+  task :hook do
     on roles(:all) do
       rvm_path = fetch(:rvm_custom_path)
       rvm_path ||= case fetch(:rvm_type)
@@ -55,19 +28,28 @@ namespace :rvm do
       else # :user
         RVM_USER_PATH
       end
-      set :rvm_path, rvm_path
 
-      rvm_ruby_version = fetch(:rvm_ruby_version)
-      rvm_ruby_version ||= capture(:rvm, "current")
-      set :rvm_ruby_version, rvm_ruby_version
+      set :rvm_path, rvm_path
+    end
+
+    SSHKit.config.command_map[:rvm] = "#{fetch(:rvm_path)}/bin/rvm"
+
+    rvm_prefix = "#{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do"
+    fetch(:rvm_map_bins).each do |command|
+      SSHKit.config.command_map.prefix[command.to_sym].unshift(rvm_prefix)
     end
   end
+end
 
+Capistrano::DSL.stages.each do |stage|
+  after stage, 'rvm:hook'
+  after stage, 'rvm:check'
 end
 
 namespace :load do
   task :defaults do
-    set :rvm_map_bins, bundler_loaded? ? %w{bundle gem rake ruby} : %w{gem rake ruby}
+    set :rvm_map_bins, %w{gem rake ruby bundle}
     set :rvm_type, :auto
+    set :rvm_ruby_version, "default"
   end
 end
