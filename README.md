@@ -49,7 +49,7 @@ the target host.
 You can omit the ruby patch level from `:rvm_ruby_version` if you want, and
 capistrano will choose the most recent patch level for that version of ruby:
 
-    set :rvm_ruby_version '2.0.0'
+    set :rvm_ruby_version, '2.0.0'
 
 If you are using an rvm gemset, just specify it after your ruby_version:
 
