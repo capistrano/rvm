@@ -15,10 +15,6 @@ SSHKit.config.command_map = Hash.new do |hash, key|
   end
 end
 
-namespace :deploy do
-  after :starting, 'rvm:hook'
-end
-
 namespace :rvm do
   desc "Runs the RVM hook - use it before any custom tasks if necessary"
   task :hook do
@@ -70,4 +66,8 @@ namespace :load do
     set :rvm_map_bins, bundler_loaded? ? %w{bundle gem rake ruby} : %w{gem rake ruby}
     set :rvm_type, :auto
   end
+end
+
+namespace :deploy do
+  after :starting, 'rvm:hook'
 end
