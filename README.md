@@ -8,7 +8,7 @@ Add this line to your application's Gemfile:
 
     # Gemfile
     gem 'capistrano', '~> 3.0'
-    gem 'capistrano-rvm', '~> 0.0.3'
+    gem 'capistrano-rvm', '~> 0.1.0'
 
 And then execute:
 
@@ -68,14 +68,14 @@ to define a custom RVM path to tell capistrano where it is.
 
 ## Restrictions
 
-Capistrano can't (yet) use rvm to install rubies or create gemsets, so on the
+Capistrano can't use rvm to install rubies or create gemsets, so on the
 servers you are deploying to, you will have to manually use rvm to install the
 proper ruby and create the gemset.
 
 
 ## How it works
 
-This gem adds a new task `rvm:hook` before `deploy:starting`.
+This gem adds a new task `rvm:hook` before `deploy` task.
 It sets the `rvm ... do ...` for capistrano when it wants to run
 `rake`, `gem`, `bundle`, or `ruby`.
 
@@ -87,16 +87,6 @@ get information about the RVM version and ruby which would be used for
 deployment.
 
     $ cap production rvm:check
-
-
-## Custom tasks which rely on RVM/Ruby
-
-When building custom tasks which rely on the current ruby and gemset, all you
-have to do is run the `rvm:hook` task before your own task. This will handle
-the execution of the ruby-related commands.
-This is only necessary if your task is *not* *after* the `deploy:starting` task.
-
-    before :my_custom_task, 'rvm:hook'
 
 ## Contributing
 
