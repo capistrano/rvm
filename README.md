@@ -28,6 +28,11 @@ It will automatically:
 - detect Gemfile and use `bundle exec`
 - create the gemset if not existing already
 
+**Warning**, `capistrano-bundler` was reported to break this gem,
+it is not needed, use this instead:
+
+    before 'deploy:updated', 'rvm:install:gems'
+
 ## Install RVM 1.x
 
 This task will install stable version of rvm in `$HOME/.rvm`:
@@ -57,6 +62,23 @@ or at least all ruby requirements installed already.
 
 Please note that `NOPASSWD` can bring security vulnerabilities to your system and
 it's not recommended to involve this option unless you really understand implications of it.
+
+## Install Gems
+
+This task will install gems from the project `Gemfile`:
+```bash
+cap rvm1:install:gems
+```
+
+Or add an before hook:
+```ruby
+before 'deploy', 'rvm1:install:ruby'  # install/update Ruby
+```
+
+Right now all gems in Gemfile will be installed into gemset.
+
+Support for `Gemfile` installation in Rubygems is still young,
+we will improve it with new RG releases.
 
 ## Configuration
 
