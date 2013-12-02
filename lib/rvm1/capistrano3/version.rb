@@ -1,5 +1,5 @@
 module RVM1
   class Capistrano3
-    VERSION="0.9.1"
+    VERSION="1.0.0"
   end
 end
