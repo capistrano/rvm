@@ -1,19 +1,17 @@
-SSHKit.config.command_map = Hash.new do |hash, key|
-  if fetch(:rvm1_map_bins).include?(key.to_s)
-    hash[key] = "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh #{fetch(:rvm1_ruby_version)} #{key}"
-  elsif key.to_s == "rvm"
-    hash[key] = "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh #{key}"
-  else
-    hash[key] = key
-  end
-end
-
 namespace :rvm1 do
   desc "Runs the RVM1 hook - use it before any custom tasks if necessary"
   task :hook do
-    unless fetch(:rvm1_hooked)
-      invoke :'rvm1:init'
-      set :rvm1_hooked, true
+    on roles(:all) do
+      execute :mkdir, "-p", "#{fetch(:tmp_dir)}/#{fetch(:application)}/"
+      upload! File.expand_path("../../../../script/rvm-auto.sh", __FILE__), "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh"
+      execute :chmod, "+x", "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh"
+    end
+
+    SSHKit.config.command_map[:rvm] = "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh"
+
+    rvm_prefix = "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh #{fetch(:rvm1_ruby_version)}"
+    fetch(:rvm1_map_bins).each do |command|
+      SSHKit.config.command_map.prefix[command.to_sym].unshift(rvm_prefix)
     end
   end
 
@@ -31,14 +29,6 @@ namespace :rvm1 do
   before :check, "deploy:updating"
   before :check, 'rvm1:hook'
 
-  task :init do
-    on roles(:all) do
-      execute :mkdir, "-p", "#{fetch(:tmp_dir)}/#{fetch(:application)}/"
-      upload! File.expand_path("../../../../script/rvm-auto.sh", __FILE__), "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh"
-      execute :chmod, "+x", "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh"
-    end
-  end
-
 end
 
 namespace :load do
@@ -48,6 +38,6 @@ namespace :load do
   end
 end
 
-namespace :deploy do
-  after :starting, 'rvm1:hook'
+Capistrano::DSL.stages.each do |stage|
+  after stage, 'rvm1:hook'
 end

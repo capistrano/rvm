@@ -28,11 +28,6 @@ It will automatically:
 - detect Gemfile and use `bundle exec`
 - create the gemset if not existing already
 
-**Warning**, `capistrano-bundler` was reported to break this gem,
-it is not needed, use this instead:
-
-    before 'deploy:updated', 'rvm:install:gems'
-
 ## Install RVM 1.x
 
 This task will install stable version of rvm in `$HOME/.rvm`:
@@ -65,7 +60,9 @@ it's not recommended to involve this option unless you really understand implica
 
 ## Install Gems
 
-This task will install gems from the project `Gemfile`:
+This task replaces `capistrano-bundler` gem use only one at time
+
+This will install gems from the project `Gemfile`:
 ```bash
 cap rvm1:install:gems
 ```
@@ -79,6 +76,10 @@ Right now all gems in Gemfile will be installed into gemset.
 
 Support for `Gemfile` installation in Rubygems is still young,
 we will improve it with new RG releases.
+
+- RG 2.0-2.1 - support for gem + version in `Gemfile`
+- RG 2.2 - limited support for `Gemfile.lock` - work still in progress,
+  test with `rvm rubygems head`
 
 ## Configuration
 
