@@ -1,6 +1,6 @@
 # Capistrano::RVM
 
-RVM support for Capistrano 3.x
+RVM support for Capistrano v3:
 
 ## Notes
 
@@ -12,12 +12,11 @@ Add this line to your application's Gemfile:
 
     # Gemfile
     gem 'capistrano', '~> 3.0'
-    gem 'capistrano-rvm', '~> 0.1.0'
+    gem 'capistrano-rvm'
 
 And then execute:
 
     $ bundle install
-    $ bundle exec cap install
 
 ## Usage
 
@@ -30,12 +29,14 @@ And you should be good to go!
 
 ## Configuration
 
-Set those in the stage file dependant on your server configuration:
+Everything *should work* for a basic RVM setup *out of the box*.
+
+If you need some special settings, set those in the stage file for your server:
 
     # stage file (staging.rb, production.rb or else)
-    set :rvm_type, :user
-    set :rvm_ruby_version, '2.0.0-p247'
-    set :rvm_custom_path, '~/.myveryownrvm'
+    set :rvm_type, :user                     # Defaults to: :auto
+    set :rvm_ruby_version, '2.0.0-p247'      # Defaults to: 'default'
+    set :rvm_custom_path, '~/.myveryownrvm'  # only needed if not detected
 
 ### RVM path selection: `:rvm_type`
 
@@ -72,8 +73,8 @@ to define a custom RVM path to tell capistrano where it is.
 
 ## Restrictions
 
-Capistrano can't use rvm to install rubies or create gemsets, so on the
-servers you are deploying to, you will have to manually use rvm to install the
+Capistrano can't use RVM to install rubies or create gemsets, so on the
+servers you are deploying to, you will have to manually use RVM to install the
 proper ruby and create the gemset.
 
 
