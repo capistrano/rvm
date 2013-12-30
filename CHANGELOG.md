@@ -1,3 +1,7 @@
+## 0.9.0
+
+* merged https://github.com/rvm/rvm1-capistrano3
+
 ## 0.1.0
 
 * User rvm is prefered over system (@mpapis)
