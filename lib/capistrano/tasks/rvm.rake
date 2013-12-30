@@ -1,40 +1,28 @@
-RVM_SYSTEM_PATH = "/usr/local/rvm"
-RVM_USER_PATH = "~/.rvm"
-
 namespace :rvm do
   desc "Prints the RVM and Ruby version on the target host"
   task :check do
     on roles(:all) do
       puts capture(:rvm, "version")
+      puts capture(:rvm, "list")
       puts capture(:rvm, "current")
-      puts capture(:ruby, "--version")
+      within fetch(:release_path) do
+        puts capture(:ruby, "--version || true")
+      end
     end
   end
+  before :check, "deploy:updating"
 
+  desc "Runs the RVM hook - use it before any custom tasks if necessary"
   task :hook do
     on roles(:all) do
-      rvm_path = fetch(:rvm_custom_path)
-      rvm_path ||= case fetch(:rvm_type)
-      when :auto
-        if test("[ -d #{RVM_USER_PATH} ]")
-          RVM_USER_PATH
-        elsif test("[ -d #{RVM_SYSTEM_PATH} ]")
-          RVM_SYSTEM_PATH
-        else
-          RVM_USER_PATH
-        end
-      when :system, :mixed
-        RVM_SYSTEM_PATH
-      else # :user
-        RVM_USER_PATH
-      end
-
-      set :rvm_path, rvm_path
+      execute :mkdir, "-p", "#{fetch(:tmp_dir)}/#{fetch(:application)}/"
+      upload! File.expand_path("../../../../script/rvm-auto.sh", __FILE__), "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh"
+      execute :chmod, "+x", "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh"
     end
 
-    SSHKit.config.command_map[:rvm] = "#{fetch(:rvm_path)}/bin/rvm"
+    SSHKit.config.command_map[:rvm] = "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh rvm"
 
-    rvm_prefix = "#{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do"
+    rvm_prefix = "#{fetch(:tmp_dir)}/#{fetch(:application)}/rvm-auto.sh #{fetch(:rvm_ruby_version)}"
     fetch(:rvm_map_bins).each do |command|
       SSHKit.config.command_map.prefix[command.to_sym].unshift(rvm_prefix)
     end
@@ -49,7 +37,6 @@ end
 namespace :load do
   task :defaults do
     set :rvm_map_bins, %w{gem rake ruby bundle}
-    set :rvm_type, :auto
-    set :rvm_ruby_version, "default"
+    set :rvm_ruby_version, "."
   end
 end
