@@ -40,14 +40,6 @@ if
 then
   exec "${rvm_path}/bin/$ruby_string" "$@"
 
-elif
-  # Gemfile and not bundle and not in bundle exec
-  test -f "${BUNDLE_GEMFILE:-Gemfile}" -a \
-    "$1" != "bundle" -a \
-    -z "${BUNDLE_BIN_PATH:-}" -a -z "${RUBYOPT:-}"
-then
-  "$0" "$ruby_string" bundle exec "$@"
-
 else
   # find and load ruby, execute the command
   if

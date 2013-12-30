@@ -36,8 +36,13 @@ It will automatically:
 
 - detect rvm installation path, preferring user installation
 - detect ruby from project directory
-- detect Gemfile and use `bundle exec`
 - create the gemset if not existing already
+
+Automatically done by RVM:
+
+- [rubygems-bundler](https://github.com/mpapis/rubygems-bundler#readme)
+  gem which is installed by default with RVM causes automatic call of
+  `Bundler.setup` which is equivalent of `bundle exec`.
 
 ## Configuration
 
@@ -75,29 +80,6 @@ or at least all ruby requirements installed already.
 
 Please note that `NOPASSWD` can bring security vulnerabilities to your system and
 it's not recommended to involve this option unless you really understand implications of it.
-
-## Install Gems
-
-This task replaces `capistrano-bundler` gem, use only one at time
-
-This will install gems from the project `Gemfile`:
-```bash
-cap rvm:install:gems
-```
-
-Or add an before hook:
-```ruby
-before 'deploy', 'rvm:install:ruby'  # install/update Ruby
-```
-
-Right now all gems in Gemfile will be installed into gemset.
-
-Support for `Gemfile` installation in Rubygems is still young,
-we will improve it with new RG releases.
-
-- RG 2.0-2.1 - support for gem + version in `Gemfile`
-- RG 2.2 - limited support for `Gemfile.lock` - work still in progress,
-  test with `rvm rubygems latest-2`
 
 ## How it works
 

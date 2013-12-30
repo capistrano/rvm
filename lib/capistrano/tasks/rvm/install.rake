@@ -22,16 +22,5 @@ namespace :rvm do
     before :ruby, "deploy:updating"
     before :ruby, 'rvm:hook'
 
-    desc "Install gems from Gemfile into gemset using rubygems."
-    task :gems do
-      on roles(:all) do
-        within release_path do
-          execute :gem, "install", "--file", "Gemfile"
-        end
-      end
-    end
-    before :gems, "deploy:updating"
-    before :gems, 'rvm:hook'
-
   end
 end
