@@ -33,7 +33,7 @@ Everything *should work* for a basic RVM setup *out of the box*.
 
 If you need some special settings, set those in the stage file for your server:
 
-    # stage file (staging.rb, production.rb or else)
+    # deploy.rb or stage file (staging.rb, production.rb or else)
     set :rvm_type, :user                     # Defaults to: :auto
     set :rvm_ruby_version, '2.0.0-p247'      # Defaults to: 'default'
     set :rvm_custom_path, '~/.myveryownrvm'  # only needed if not detected
