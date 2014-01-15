@@ -1,3 +1,7 @@
+## 0.1.1
+
+* Flexible SSHKit dependency
+
 ## 0.1.0
 
 * User rvm is prefered over system (@mpapis)
