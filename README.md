@@ -64,12 +64,16 @@ or
 
     set :rvm_ruby_version, '2.0.0@mygemset'
 
-
 ### Custom RVM path: `:rvm_custom_path`
 
 If you have a custom RVM setup with a different path then expected, you have
 to define a custom RVM path to tell capistrano where it is.
 
+### Custom Roles: `:rvm_roles`
+
+If you want to restrict RVM usage to a subset of roles, you may set `:rvm_roles`:
+
+    set :rvm_roles, [:app, :web]
 
 ## Restrictions
 
