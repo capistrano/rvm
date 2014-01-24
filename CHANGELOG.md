@@ -1,3 +1,7 @@
+## 0.1.2
+
+* `rvm_roles` option [#41](https://github.com/capistrano/rvm/pull/41)
+
 ## 0.1.1
 
 * Flexible SSHKit dependency
