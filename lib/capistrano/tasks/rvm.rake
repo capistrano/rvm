@@ -5,7 +5,7 @@ namespace :rvm do
   desc "Prints the RVM and Ruby version on the target host"
   task :check do
     on roles(fetch(:rvm_roles, :all)) do
-      unless ENV['QUIET']
+      if fetch(:log_level) == :debug
         puts capture(:rvm, "version")
         puts capture(:rvm, "current")
         puts capture(:ruby, "--version")
