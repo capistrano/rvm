@@ -1,4 +1,6 @@
-## 0.1.2
+## 0.1.2 (14 Oct 2014)
+
+* suppress this constant RVM checks if QUIET environment variables is set [#42](https://github.com/capistrano/rvm/pull/42)
 
 * `rvm_roles` option [#41](https://github.com/capistrano/rvm/pull/41)
 
