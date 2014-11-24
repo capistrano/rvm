@@ -54,6 +54,10 @@ namespace :load do
   task :defaults do
     set :rvm_map_bins, %w{gem rake ruby bundle}
     set :rvm_type, :auto
-    set :rvm_ruby_version, "default"
+    set :rvm_ruby_version, proc{
+      within release_path do
+        capture(:rvm, "current")
+      end
+    }
   end
 end
