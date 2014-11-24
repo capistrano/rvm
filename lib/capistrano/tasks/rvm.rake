@@ -5,11 +5,9 @@ namespace :rvm do
   desc "Prints the RVM and Ruby version on the target host"
   task :check do
     on roles(fetch(:rvm_roles, :all)) do
-      if fetch(:log_level) == :debug
-        puts capture(:rvm, "version")
-        puts capture(:rvm, "current")
-        puts capture(:ruby, "--version")
-      end
+      puts capture(:rvm, "version")
+      puts capture(:rvm, "current")
+      puts capture(:ruby, "--version")
     end
   end
 
@@ -45,7 +43,9 @@ end
 
 Capistrano::DSL.stages.each do |stage|
   after stage, 'rvm:hook'
-  after stage, 'rvm:check'
+  if fetch(:log_level) == :debug
+    after stage, 'rvm:check'
+  end
 end
 
 namespace :load do
