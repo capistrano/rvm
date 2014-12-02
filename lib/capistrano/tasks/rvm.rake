@@ -36,11 +36,8 @@ namespace :rvm do
 
     SSHKit.config.command_map[:rvm] = "#{fetch(:rvm_path)}/bin/rvm"
 
-    # Use proc for rvm_prefix once capistrano supports it
-    rvm_prefix = "#{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do"
+    rvm_prefix = proc{ "#{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do" }
     fetch(:rvm_map_bins).each do |command|
-      # We could remove that hack once capistrano supports procs for SSHKit.config.command_map.prefix
-      SSHKit.config.command_map.prefix[command.to_sym].reject!{ |cmd| cmd =~ /bin\/rvm / }
       SSHKit.config.command_map.prefix[command.to_sym].unshift(rvm_prefix)
     end
   end
@@ -62,9 +59,6 @@ namespace :load do
     set :rvm_map_bins, %w{gem rake ruby bundle}
     set :rvm_type, :auto
     set :rvm_ruby_version, ruby_version
-
-    # We could remove that hack once capistrano supports procs for SSHKit.config.command_map.prefix
-    Rake::Task["rvm:hook"].execute
   end
 end
 
