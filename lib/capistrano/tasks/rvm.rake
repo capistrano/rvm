@@ -52,7 +52,7 @@ end
 
 namespace :load do
   task :defaults do
-    Rake::Task["load:set_rvm_defaults"].execute("default")
+    Rake::Task["load:set_rvm_defaults"].execute("current")
   end
 
   task :set_rvm_defaults do |task, ruby_version|
