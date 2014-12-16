@@ -5,7 +5,7 @@ namespace :rvm do
   desc "Prints the RVM and Ruby version on the target host"
   task :check do
     on roles(fetch(:rvm_roles, :all)) do
-      if fetch(:log_level) == :debug
+      within release_path do
         puts capture(:rvm, "version")
         puts capture(:rvm, "current")
         puts capture(:ruby, "--version")
@@ -36,7 +36,7 @@ namespace :rvm do
 
     SSHKit.config.command_map[:rvm] = "#{fetch(:rvm_path)}/bin/rvm"
 
-    rvm_prefix = "#{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do"
+    rvm_prefix = proc{ "#{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do" }
     fetch(:rvm_map_bins).each do |command|
       SSHKit.config.command_map.prefix[command.to_sym].unshift(rvm_prefix)
     end
@@ -45,13 +45,32 @@ end
 
 Capistrano::DSL.stages.each do |stage|
   after stage, 'rvm:hook'
-  after stage, 'rvm:check'
+  if fetch(:log_level) == :debug
+    after stage, 'rvm:check'
+  end
 end
 
 namespace :load do
   task :defaults do
+    Rake::Task["load:set_rvm_defaults"].execute("current")
+  end
+
+  task :set_rvm_defaults do |task, ruby_version|
     set :rvm_map_bins, %w{gem rake ruby bundle}
     set :rvm_type, :auto
-    set :rvm_ruby_version, "default"
+    set :rvm_ruby_version, ruby_version
+  end
+end
+
+namespace :deploy do
+  task :set_current_revision do
+    on primary(:app) do
+      within release_path do
+        ruby_version = capture(:rvm, "current")
+        # FIX ME: when calling `set :rvm_ruby_version, ruby_version` here directly
+        # fetch(:rvm_ruby_version) in other tasks still returns the old value...?!
+        Rake::Task["load:set_rvm_defaults"].execute(ruby_version)
+      end
+    end
   end
 end
