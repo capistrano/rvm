@@ -36,8 +36,10 @@ namespace :rvm do
 
     SSHKit.config.command_map[:rvm] = "#{fetch(:rvm_path)}/bin/rvm"
 
-    rvm_prefix = "#{fetch(:rvm_path)}/bin/rvm #{fetch(:rvm_ruby_version)} do"
-    fetch(:rvm_map_bins).each do |command|
+    fetch(:rvm_map_bins).each do |(command, rvm_ruby_version)|
+      rvm_ruby_version ||= fetch(:rvm_ruby_version)
+
+      rvm_prefix = "#{fetch(:rvm_path)}/bin/rvm #{rvm_ruby_version} do"
       SSHKit.config.command_map.prefix[command.to_sym].unshift(rvm_prefix)
     end
   end
