@@ -13,6 +13,8 @@ namespace :rvm do
     end
   end
 
+  before :check, :hook
+
   task :hook do
     on roles(fetch(:rvm_roles, :all)) do
       rvm_path = fetch(:rvm_custom_path)
@@ -43,10 +45,7 @@ namespace :rvm do
   end
 end
 
-Capistrano::DSL.stages.each do |stage|
-  after stage, 'rvm:hook'
-  after stage, 'rvm:check'
-end
+before :deploy, 'rvm:hook'
 
 namespace :load do
   task :defaults do
