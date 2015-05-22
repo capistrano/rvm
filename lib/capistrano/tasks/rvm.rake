@@ -4,6 +4,7 @@ RVM_USER_PATH = "~/.rvm"
 namespace :rvm do
   desc "Prints the RVM and Ruby version on the target host"
   task :check do
+    next if should_skip
     on roles(fetch(:rvm_roles, :all)) do
       if fetch(:log_level) == :debug
         puts capture(:rvm, "version")
@@ -14,6 +15,7 @@ namespace :rvm do
   end
 
   task :hook do
+    next if should_skip
     on roles(fetch(:rvm_roles, :all)) do
       rvm_path = fetch(:rvm_custom_path)
       rvm_path ||= case fetch(:rvm_type)
@@ -41,6 +43,12 @@ namespace :rvm do
       SSHKit.config.command_map.prefix[command.to_sym].unshift(rvm_prefix)
     end
   end
+end
+
+def should_skip
+  skip_rvm_for_tasks = fetch(:skip_rvm_for_tasks, [])
+  invoked_with_task = Rake.application.top_level_tasks.last
+  skip_rvm_for_tasks.any? { |t| Regexp.new(t).match(invoked_with_task) }
 end
 
 Capistrano::DSL.stages.each do |stage|
