@@ -48,7 +48,13 @@ end
 def should_skip
   skip_rvm_for_tasks = fetch(:skip_rvm_for_tasks, [])
   invoked_with_task = Rake.application.top_level_tasks.last
-  skip_rvm_for_tasks.any? { |t| Regexp.new(t).match(invoked_with_task) }
+  skip_rvm_for_tasks.any? do |t|
+    if t.is_a?(Regexp)
+      t.match(invoked_with_task)
+    else
+      t == invoked_with_task
+    end
+  end
 end
 
 Capistrano::DSL.stages.each do |stage|
