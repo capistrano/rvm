@@ -43,9 +43,10 @@ namespace :rvm do
   end
 end
 
-Capistrano::DSL.stages.each do |stage|
-  after stage, 'rvm:hook'
-  after stage, 'rvm:check'
+def with_rvm(*tasks)
+  tasks.each do |t|
+    before t, 'rvm:hook'
+  end
 end
 
 namespace :load do

@@ -22,12 +22,30 @@ And then execute:
 
 ## Usage
 
-Require in Capfile to use the default task:
+Require in Capfile to always use `rvm:hook` task:
 
     # Capfile
     require 'capistrano/rvm'
 
-And you should be good to go!
+And you should be good to go!  All tasks will be rvm-aware.
+
+Or, If you prefer to manually manage RVM integration at the task level:
+
+    # Capfile
+    require 'capistrano/rvm/no_hook'
+
+With this approach, you must explicitly set `rvm:hook` as a prequisite for tasks
+requiring RVM support:
+
+    before TASKNAME, 'rvm:hook'
+
+You may aletnatively use the convenience method `with_rvm`:
+
+    with_rvm TASKNAME
+
+Multiple tasks may be supported in one line:
+
+    with_rvm TASKNAME1, TASKNAME2, TASKNAME3
 
 ## Configuration
 
@@ -86,10 +104,18 @@ proper ruby and create the gemset.
 
 ## How it works
 
-This gem adds a new task `rvm:hook` before `deploy` task.
-It sets the `rvm ... do ...` for capistrano when it wants to run
-`rake`, `gem`, `bundle`, or `ruby`.
+With the default configuration, this gem adds a new tasks `rvm:hook` and
+`rvm:check` after each stage-setting task (ex. 'staging', 'production', etc.).
 
+`rvm:hook` sets the `rvm ... do ...` for capistrano when it wants to run `rake`,
+`gem`, `bundle`, or `ruby`.
+
+`rvm:check` outputs the current version info for rvm plus the active rvm and
+gemset.  It only runs when :log_level is set to :debug (including when the
+`--trace` argument is passed to `cap`.)
+
+When the `no_hook` configuration is used, `rvm:hook` must be manually set as a
+prerequisite for tasks requiring RVM support (with the exception of `rvm:check`.)
 
 ## Check your configuration
 
