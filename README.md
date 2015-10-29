@@ -80,16 +80,21 @@ If you want to restrict RVM usage to a subset of roles, you may set `:rvm_roles`
 ## Restrictions
 
 Capistrano can't use RVM to install rubies or create gemsets, so on the
-servers you are deploying to, you will have to manually use RVM to install the
+servers you are deploying to, you will have to manually use RVM to install the 
 proper ruby and create the gemset.
 
 
 ## How it works
 
-This gem adds a new task `rvm:hook` before `deploy` task.
-It sets the `rvm ... do ...` for capistrano when it wants to run
-`rake`, `gem`, `bundle`, or `ruby`.
+This gem adds a new tasks `rvm:hook` and `rvm:check` before each stage-setting 
+task (ex. 'staging', 'production', etc.).
 
+`rvm:hook` sets the `rvm ... do ...` for capistrano when it wants to run `rake`,
+`gem`, `bundle`, or `ruby`.
+
+`rvm:check` outputs the current version info for rvm plus the active rvm and 
+gemset.  It only runs when :log_level is set to :debug (including when the 
+`--trace` argument is passed to `cap`.)
 
 ## Check your configuration
 
