@@ -6,9 +6,9 @@ namespace :rvm do
   task :check do
     on roles(fetch(:rvm_roles, :all)) do
       if fetch(:log_level) == :debug
-        puts capture(:rvm, "version")
-        puts capture(:rvm, "current")
-        puts capture(:ruby, "--version")
+        debug capture(:rvm, "version")
+        debug capture(:rvm, "current")
+        debug capture(:ruby, "--version")
       end
     end
   end
