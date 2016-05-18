@@ -48,6 +48,8 @@ Valid options are:
   * `:system`: defines the RVM path to `/usr/local/rvm`
   * `:user`: defines the RVM path to `~/.rvm`
 
+In order to disable RVM, use `rvm_roles` (see below).
+
 ### Ruby and gemset selection: `:rvm_ruby_version`
 
 By default the Ruby and gemset is used which is returned by `rvm current` on
@@ -76,6 +78,10 @@ to define a custom RVM path to tell capistrano where it is.
 If you want to restrict RVM usage to a subset of roles, you may set `:rvm_roles`:
 
     set :rvm_roles, [:app, :web]
+
+To disable it (e.g. because you use Chruby or Rbenv), use a:
+
+    set :rvm_roles, []
 
 ## Restrictions
 
