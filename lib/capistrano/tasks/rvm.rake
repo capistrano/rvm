@@ -43,11 +43,6 @@ namespace :rvm do
   end
 end
 
-Capistrano::DSL.stages.each do |stage|
-  after stage, 'rvm:hook'
-  after stage, 'rvm:check'
-end
-
 namespace :load do
   task :defaults do
     set :rvm_map_bins, %w{gem rake ruby bundle}

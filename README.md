@@ -29,6 +29,25 @@ Require in Capfile to use the default task:
 
 And you should be good to go!
 
+### Explicitely require hooks
+
+Alternatively, if you want to have control on the execution of nvm tasks
+
+```ruby
+# Capfile
+require capistrano/rbenv/without_hooks
+```
+
+You can then add the hooks on a per deploy script basis
+
+```ruby
+# config/deploy/my_stage_with_rvm.rb
+Capistrano::DSL.stages.each do |stage|
+  after stage, 'rvm:hook'
+  after stage, 'rvm:check'
+end
+```
+
 ## Configuration
 
 Everything *should work* for a basic RVM setup *out of the box*.
