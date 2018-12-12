@@ -1,1 +1,1 @@
-load File.expand_path('../../tasks/rvm.rb', __FILE__)
+load File.expand_path('../../tasks/rvm.rake', __FILE__)
