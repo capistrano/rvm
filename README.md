@@ -39,6 +39,13 @@ If you need some special settings, set those in the stage file for your server:
     set :rvm_type, :user                     # Defaults to: :auto
     set :rvm_ruby_version, '2.0.0-p247'      # Defaults to: 'default'
     set :rvm_custom_path, '~/.myveryownrvm'  # only needed if not detected
+    
+If you install RVM on ubuntu using apt, please see https://github.com/rvm/ubuntu_rvm.  You
+will need to set 
+
+    set :rvm_custom_path, '/usr/share/rvm/'
+
+as rvm is installed into /usr/share/rvm (as Debian/Ubuntu convention)
 
 ### RVM path selection: `:rvm_type`
 
