@@ -6,6 +6,8 @@ RVM support for Capistrano v3:
 
 **If you use this integration with capistrano-rails, please ensure that you have `capistrano-bundler >= 1.1.0`.**
 
+If you want solution with RVM/rubies installer included, give a try to [rvm1-capistrano3](https://github.com/rvm/rvm1-capistrano3).
+
 ## Installation
 
 Add this line to your application's Gemfile:
