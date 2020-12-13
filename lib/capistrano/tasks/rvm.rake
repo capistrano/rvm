@@ -1,4 +1,5 @@
-RVM_SYSTEM_PATH = "/usr/local/rvm"
+RVM_SYSTEM_PATH = "/usr/share/rvm"
+RVM_OLD_SYSTEM_PATH = "/usr/local/rvm"
 RVM_USER_PATH = "~/.rvm"
 
 namespace :rvm do
@@ -16,21 +17,60 @@ namespace :rvm do
   task :hook do
     on roles(fetch(:rvm_roles, :all)) do
       rvm_path = fetch(:rvm_custom_path)
-      rvm_path ||= case fetch(:rvm_type)
-      when :auto
-        if test("[ -d #{RVM_USER_PATH} ]")
-          RVM_USER_PATH
-        elsif test("[ -d #{RVM_SYSTEM_PATH} ]")
-          RVM_SYSTEM_PATH
-        else
-          RVM_USER_PATH
+      unless rvm_path
+        rvm_type = fetch(:rvm_type)
+        if rvm_type == :auto
+          [RVM_USER_PATH,
+            RVM_SYSTEM_PATH,
+            RVM_OLD_SYSTEM_PATH].each do |pathtotest|
+            if test("[ -d #{pathtotest} ]")
+              rvm_path = pathtotest
+              break
+            end
+          end
+        elsif [:system,:mixed].include?(rvm_type)                    
+          rvm_path = RVM_SYSTEM_PATH
+        else # :user
+          rvm_path = RVM_USER_PATH
         end
-      when :system, :mixed
-        RVM_SYSTEM_PATH
-      else # :user
-        RVM_USER_PATH
       end
 
+      if test("[ ! -d #{rvm_path} ]")
+        puts <<EOF
+################################################################################
+
+capistrano-rvm config:
+
+RVM path was derived as #{rvm_path}, but that is not found.   Things won't work.
+
+You may want to try adding
+
+set :rvm_type, :auto
+
+To your stage, which will search a set of likely candidates.
+
+You can also set it specifically with:
+
+set :rvm_path, '/a/path/to/rvm'
+
+You should be aware that when installing rvm in system mode, the default path
+changed from
+
+/usr/local/rvm
+
+to
+
+/usr/share/rvm
+
+starting with
+
+https://github.com/rvm/rvm/issues/2456
+
+################################################################################
+
+EOF
+        raise "RVM Path #{rvm_path} does not exist.  See longer error description above"
+      end
       set :rvm_path, rvm_path
     end
 
